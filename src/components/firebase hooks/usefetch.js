@@ -1,5 +1,5 @@
 import { initializeApp } from "firebase/app";
-import { getDatabase, ref, onValue, set } from "firebase/database";
+import { getDatabase, ref, set } from "firebase/database";
 
 const firebaseConfig = {
     apiKey: "AIzaSyBFnLdam_tgkcovAPHwFLNopCdMch7peEI",
@@ -14,21 +14,6 @@ const firebaseConfig = {
 
 initializeApp(firebaseConfig);
 const db = getDatabase();
-const starCountRef = ref(db, 'cart/');
-let dataArray;
-
-export const fetchData = () => {
-    let val;
-    const setData = (data) => {
-        val = data;
-        return val
-    }
-    onValue(starCountRef, async (snapshot) => {
-        val = await snapshot.val();
-        setData(val);
-    })
-    return setData
-}
 
 export const addItem = (name, qty, price) => {
     set(ref(db, `cart/${name}/`), {

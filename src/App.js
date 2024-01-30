@@ -3,27 +3,26 @@ import Cart from './components/Cart/Cart';
 import Layout from './components/Layout/Layout';
 import Products from './components/Shop/Products';
 import { useEffect, useRef } from 'react';
-import { fetchData, updateCart } from './components/firebase/fireb-db';
+import { updateCart } from './components/firebase hooks/usefetch';
+import { cartActions } from './store/cart-slice';
+import { getDatabase, ref, onValue } from "firebase/database";
 
 function App() {
   const show = useSelector(state => state.ui.cartIsVisible);
   const cart = useSelector(state => state.cart);
 
-  var cartdat = useRef();
-  var flagRef = useRef(true);
+  var flagRef = useRef(0);
   const dispatch = useDispatch();
 
-  const fun = async () => {
-    const data = await fetchData()
-    console.log(data)
-  }
   useEffect(() => {
     const isInitial = flagRef.current;
-    if (isInitial) {
-      flagRef.current = false;
-      fun()
-      // const newCart = cartdat.current.items ? cartdat.current : {items:[], totalQuantity:cartdat.current.totalQuantity}
-      // dispatch(cartActions.replaceCart(newCart));
+    if (isInitial < 1) {
+      flagRef.current++;
+      onValue(ref(getDatabase(), 'cart/'), (snapshot) => {
+        let val = snapshot.val();
+        if(val.totalQuantity===0) val={items:[],totalQuantity:0}
+        dispatch(cartActions.replaceCart(val))
+      })
       return;
     }
     updateCart(cart);

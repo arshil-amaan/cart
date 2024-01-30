@@ -2,7 +2,6 @@ import { useDispatch } from 'react-redux';
 import Card from '../UI/Card';
 import classes from './ProductItem.module.css';
 import { cartActions } from '../../store/cart-slice';
-import { fetchData } from '../firebase/fireb-db';
 
 const ProductItem = (props) => {
   const dispatch = useDispatch();
@@ -13,7 +12,6 @@ const ProductItem = (props) => {
     dispatch(cartActions.addToCart({
       id, title, price
     }))
-    console.log(fetchData());
   }
 
   return (
